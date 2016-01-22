@@ -2,59 +2,96 @@
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with change_window](#setup)
-    * [What change_window affects](#what-change_window-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with change_window](#beginning-with-change_window)
 4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
 6. [Development - Guide for contributing to the module](#development)
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves. This is your 30 second elevator pitch for your module. Consider including OS/Puppet version it works with.       
+Provides change_window function that allows you to check current time against change windows you've defined.  
+
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology the module integrates with and what that integration enables. This section should answer the questions: "What does this module *do*?" and "Why would I use it?"
+Why?
 
-If your module has a range of functionality (installation, configuration, management, etc.) this is the time to mention it.
+The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  
 
-## Setup
+What happens is this function returns true or false (as a string) and you can use that input to your logic for noop. See [usage](#usage).
 
-### What change_window affects
+This module is actually made up of just one function, change_window.   
 
-* A list of files, packages, services, or operations that the module will alter, impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form. 
-
-### Setup Requirements **OPTIONAL**
-
-If your module requires anything extra before setting up (pluginsync enabled, etc.), mention it here. 
-
-### Beginning with change_window
-
-The very basic steps needed for a user to get the module up and running. 
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you may wish to include an additional section here: Upgrading (For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
 
 ## Usage
 
-Put the classes, types, and resources for customizing, configuring, and doing the fancy stuff with your module here. 
+Example Usage:
 
-## Reference
+Where:
+`$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
+`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as 0-6.  You can specify the same day if you like.
+`$window_time` is a hash where start is an array and the 0 position is the start hour, the 1 position is the start minute. End is a key with another array as its value that sets the end hour and minute.
+`$window_type` accepts to values: per_day or window.  `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true.  `window` (or actually any value but per_day) tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
 
-Here, list the classes, types, providers, facts, etc contained in your module. This section should include all of the under-the-hood workings of your module so people know what the module is touching on their system but don't need to mess with things. (We are working on automating this section!)
+```puppet
+$tz = "-05:00"
+$window_wday  = { start => 5, end => 6 }
+$window_time = { start  => ['20', '00'], end => ['23','00'] }
+$window_type = 'window'
+$val = change_window($tz, $window_type, $window_wday, $window_time)
 
-## Limitations
+if $val == 'false' {
+    notify { "Puppet noop safety latch is enabled in site.pp!": }
+    noop()
+}
+```
 
-This is where you list OS compatibility, version compatibility, etc.
+Another example shows wrapping the weekend.  You can specify combinations like below (days 5 - 0).  This will result in days 5,6,0 as being valid for the change window.  In this case I'm using per_day so on Friday, Saturday, or Sunday between 8PM and 11PM changes will be allowed.
+
+```puppet
+$tz = "-05:00"
+$window_wday  = { start => 5, end => 0 }
+$window_time = { start  => ['20', '00'], end => ['23','00'] }
+$window_type = 'per_day'
+$val = change_window($tz, $window_type, $window_wday, $window_time)
+
+if $val == 'false' {
+    notify { "Puppet noop safety latch is enabled in site.pp!": }
+    noop()
+}
+```
+
+You can also use hiera to enable more complex windows:
+
+hiera:
+```
+tz_dev: "-05:00"
+window_type_dev: per_day
+window_wday_dev:
+  start: 5
+  end: 0
+window_time_dev:
+  start:
+    - 20
+    - 00
+  end:
+    - 23
+    - 00
+```
+
+site.pp:
+```puppet
+$e = $::custom_env
+$val = change_window(
+         hiera("tz_${e}"),
+         hiera("window_type_${e}"),
+         hiera("window_wday_${e}"),
+         hiera("window_time_${e}")
+         )
+if $val == 'false' {
+  notify { "Puppet noop safety latch is enabled for env ${e} in site.pp!": }
+  noop()
+}
+```
 
 ## Development
 
-Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You may also add any additional sections you feel are necessary or important to include here. Please use the `## ` header. 
+Contributing via the normal means(fork/PR - add your tests!).  This code definitely could be improved.
