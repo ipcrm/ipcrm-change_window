@@ -32,12 +32,12 @@ module Puppet::Parser::Functions
     #Day of the week from 0, Sunday
     # Note use start 0 and end 0 for all week
     # (which  allows you to just have a time range every day)
-    # Example: {:start => 4, :end => 0}
+    # Example: {'start' => 4, 'end' => 0}
     window_wday  = args[2]
 
     ## Stores window start end time
     #24Hour #Minute
-    #Example: {:start => ['17', '00'], :end => ['23', '00']}
+    #Example: {'start' => ['17', '00'], 'end' => ['23', '00']}
     window_time = args[3]
 
     # Get Time (this will use localtime)
@@ -65,36 +65,37 @@ module Puppet::Parser::Functions
       return false
     end
 
-    if window_wday[:end] == 0
-      valid_days = (window_wday[:start]..window_wday[:start]+(6-window_wday[:start])).to_a.push(0).uniq
+    if window_wday['end'] == 0
+      valid_days = (window_wday['start']..window_wday['start']+(6-window_wday['start'])).to_a.push(0).uniq
     else
-      valid_days = (window_wday[:start]..window_wday[:end]).to_a.uniq
+      valid_days = (window_wday['start']..window_wday['end']).to_a.uniq
     end
 
 
     # Determine if this is multiday window
     if valid_days.include?(t.wday)
       # IF this is the first day of the window, adjust the end time to be 23:59 (ie the last possible minute of the day)
-      if t.wday == window_wday[:start]
-        window_time[:end] = ['23','59']
+      if t.wday == window_wday['start']
+        window_time['end'] = ['23','59']
         # IF we are within <start time> and 23:59 return true
-        is_within(window_time[:start],window_time[:end],[t.hour,t.min]) == true ? true : false
+        is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
       # IF this is the last day of the window, adjust to compare from 00:00 start time (ie first minute possible)
-      elsif t.wday == window_wday[:end]
-        window_time[:start] = ['00','00']
+      elsif t.wday == window_wday['end']
+        window_time['start'] = ['00','00']
         # IF we are within 00:00 and <end time> return true
-        is_within(window_time[:start],window_time[:end],[t.hour,t.min]) == true ? true : false
+        is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
       else
         if window_type == 'per_day'
           # If you've set per_day as your window type check if we are within the correct time
-          is_within(window_time[:start],window_time[:end],[t.hour,t.min]) == true ? true : false
+          is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
         else
           # If you've accepted the default window_type this is a continuous change window
           # Based on the above logic, this isn't the first day of the window, its not the last, but its within the valid_days
-          # for your window.  Meaning, we don't care about time.  Its in your window.  Example: Start is Mon, End is Wed, today is Tuesday.
+          # for your window.  Meaning, we don't care about time.  Its in your window.  Example: Start is Mon, End is Wed, 
+          # today is Tuesday.
           true
         end
       end
