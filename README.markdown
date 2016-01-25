@@ -21,10 +21,6 @@ This module is actually made up of just one function, change_window.  All the fu
 *IMPORTANT* Remember that if your _within_ the change window the value returned is _true_, otherwise it returns _false_.
 
 ## Usage
-
-Example Usage:
-change_window("-05:00", "per_day", {"start"=>0, "end"=>6}, {"start"=>"00:00", "end"=>"23:59"})
-
 Where:
 `$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
 `$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like.
