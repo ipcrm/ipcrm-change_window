@@ -1,8 +1,8 @@
 #### Table of Contents
 
 1. [Overview](#overview)
-2. [Module Description - What the module does and why it is useful](#module-description)
-4. [Usage - Configuration options and additional functionality](#usage)
+2. [Module Description](#module-description)
+4. [Usage](#usage)
 6. [Development - Guide for contributing to the module](#development)
 
 ## Overview
@@ -24,22 +24,23 @@ This module is actually made up of just one function, change_window.
 ## Usage
 
 Example Usage:
+change_window("-05:00", "per_day", {"start"=>0, "end"=>6}, {"start"=>"00:00", "end"=>"23:59"})
 
 Where:
 `$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
-`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as 0-6.  You can specify the same day if you like.
-`$window_time` is a hash where start is an array and the 0 position is the start hour, the 1 position is the start minute. End is a key with another array as its value that sets the end hour and minute.
+`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like.
+`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute.
 `$window_type` accepts to values: per_day or window.  `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true.  `window` (or actually any value but per_day) tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
 
 ```puppet
 $tz = "-05:00"
-$window_wday  = { start => 5, end => 6 }
-$window_time = { start  => ['20', '00'], end => ['23','00'] }
+$window_wday  = { start => 'Friday', end => 'Saturday' }
+$window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'window'
 $val = change_window($tz, $window_type, $window_wday, $window_time)
 
 if $val == 'false' {
-    notify { "Puppet noop safety latch is enabled in site.pp!": }
+    notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
 ```
@@ -48,13 +49,13 @@ Another example shows wrapping the weekend.  You can specify combinations like b
 
 ```puppet
 $tz = "-05:00"
-$window_wday  = { start => 5, end => 0 }
-$window_time = { start  => ['20', '00'], end => ['23','00'] }
+$window_wday  = { start => 'Friday', end => 'Sunday' }
+$window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'per_day'
 $val = change_window($tz, $window_type, $window_wday, $window_time)
 
 if $val == 'false' {
-    notify { "Puppet noop safety latch is enabled in site.pp!": }
+    notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
 ```
@@ -66,15 +67,11 @@ hiera:
 tz_dev: "-05:00"
 window_type_dev: per_day
 window_wday_dev:
-  start: 5
-  end: 0
+  start: Friday
+  end: Sunday
 window_time_dev:
-  start:
-    - 20
-    - 00
-  end:
-    - 23
-    - 00
+  start: "20:00"
+  end: "23:00"
 ```
 
 site.pp:
@@ -87,7 +84,7 @@ $val = change_window(
          hiera("window_time_${e}")
          )
 if $val == 'false' {
-  notify { "Puppet noop safety latch is enabled for env ${e} in site.pp!": }
+  notify { "Puppet noop enabled in site.pp for env ${e}! Not within change window!": }
   noop()
 }
 ```
