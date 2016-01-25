@@ -14,12 +14,11 @@ Provides change_window function that allows you to check current time against ch
 
 Why?
 
-The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  
+The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use this function with any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
 
-What happens is this function returns true or false (as a string) and you can use that input to your logic for noop. See [usage](#usage).
+This module is actually made up of just one function, change_window.  All the function does is consume you change window information (see [usage](#usage)) and return true or false(as a string).  This can be used to make decisions within your code.
 
-This module is actually made up of just one function, change_window.   
-
+*IMPORTANT* Remember that if your _within_ the change window the value returned is _true_, otherwise it returns _false_.
 
 ## Usage
 
