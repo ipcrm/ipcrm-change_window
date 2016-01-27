@@ -21,11 +21,19 @@ This module is actually made up of just one function, change_window.  All the fu
 *IMPORTANT* Remember that if your _within_ the change window the value returned is _true_, otherwise it returns _false_.
 
 ## Usage
+change_window( $tz, $window_wday, $window_time, $window_type, [$time])
+
 Where:
 `$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
-`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like.
-`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute.
-`$window_type` accepts to values: per_day or window.  `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true.  `window` (or actually any value but per_day) tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
+
+`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
+
+`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00).
+
+`$window_type` accepts to values: per_day or window.  
+* `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true. For wrapped hours you receive start to midnight on the first day and midnight to end on the last day.
+* `window` tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
+*  `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
 
 ```puppet
 $tz = "-05:00"
