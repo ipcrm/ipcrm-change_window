@@ -8,7 +8,7 @@ module Puppet::Parser::Functions
   ) do |args|
     class << self
       def change_window_time_is_within(s,e,c)
-        # Calculate by minutes of the week 0 ... 86400
+        # Calculate by minutes of the week 0 ... 1439
         test = ((s[0].to_i*60+s[1].to_i)..(e[0].to_i*60+e[1])).cover?(c[0]*60+c[1])
         return test
       end
