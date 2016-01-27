@@ -10,7 +10,6 @@ module Puppet::Parser::Functions
       def change_window_time_is_within(s,e,c)
         # Calculate by minutes of the week 0 ... 86400
         test = ((s[0].to_i*60+s[1].to_i)..(e[0].to_i*60+e[1])).cover?(c[0]*60+c[1])
-        puts "change_window_time_is_within( #{(s[0].to_i*60+s[1].to_i)},#{(e[0].to_i*60+e[1])}, #{(c[0]*60+c[1])}) == #{test}"
         return test
       end
     end
@@ -20,7 +19,6 @@ module Puppet::Parser::Functions
     # args[2] Hash, window_wday
     # args[3] Hash, window_time
     # args[4] String, Point-in-time to test (optional)
-    #puts "args = #{args}"
 
     # Validate Arguments are all present
     raise Puppet::ParseError, "Invalid argument count, got #{args.length} expected 4 or 5" unless (4..5).cover?(args.length)
@@ -120,7 +118,6 @@ module Puppet::Parser::Functions
         raise Puppet::ParseError, "Could not convert time array into valid Time.new object, received #{args[4].to_a}"
       end
     end
-    #puts "t = #{t.to_s}"
 
     # Build array of valid_days
     if window_wday_int['start'] > window_wday_int['end']
@@ -130,18 +127,14 @@ module Puppet::Parser::Functions
       # Within-EOW 1,4 = 1,2,3,4
       valid_days = (window_wday_int['start']..window_wday_int['end']).to_a.uniq
     end
-    puts "valid_days are #{valid_days.to_s}"
 
     # Determine if today is within the valid days for the change window
-    puts "Start decision tree"
     if valid_days.include?(t.wday)
 
       # IF this is the first day of the window
       if t.wday == window_wday_int['start'] and valid_days.length > 1
-        puts "start day"
         # If window type or per_day with midnight wrap
         if window_type == 'window' or (window_type == 'per_day' and window_time_str['start'] > window_time_str['end'])
-          puts "adjust end_time"
           # IF we are within <start time> and 23:59 return true
           window_time['end'] = [23,59]
         end
@@ -149,11 +142,9 @@ module Puppet::Parser::Functions
 
       # If this is the last day of the window
       elsif t.wday == window_wday_int['end'] and valid_days.length > 1
-        puts "end day"
 
         # If window type or per_day with midnight wrap
         if window_type == 'window' or (window_type == 'per_day' and window_time_str['start'] > window_time_str['end'])
-          puts "adjust start_time"
           #If we are within 00:00 and end
           window_time['start'] = [0, 0]
         end
@@ -161,24 +152,20 @@ module Puppet::Parser::Functions
 
       # If 1 day window type or per_day wo/ midnight wrap
       elsif (valid_days.length == 1 and window_type == 'window') or window_type == 'per_day'
-        puts "oneday or simple start/end"
         change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
 
 
       # midweek per_day
       elsif window_type == 'per_day'
-        puts "midweek per_day type"
         change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
 
       # Fall through matches window type and between window start/end
       else
-        puts "midweek window type"
         true.to_s
       end
 
     # Your not within the valid_days
     else
-      puts "not valid day"
       false.to_s
     end
   end
