@@ -8,25 +8,9 @@ module Puppet::Parser::Functions
   ) do |args|
     class << self
       def change_window_time_is_within(s,e,c)
-        #Hours
-        if (s[0].to_i .. e[0].to_i).cover?(c[0].to_i)
-
-          # Mins
-          ## If mins are identical we are only comparing hours
-          if s[1] != e[1]
-
-            ## Check if our current minutes is within the change window range
-            if (s[1].to_i .. e[1].to_i).cover?(c[1].to_i)
-              return true
-            end
-
-          ## Since we are only comparing hours and have made it here
-          ## we are wihin the change window
-          else
-            return true
-          end
-        end
-          return false
+        # Calculate by minutes of the week 0 ... 1439
+        test = ((s[0].to_i*60+s[1].to_i)..(e[0].to_i*60+e[1])).cover?(c[0]*60+c[1])
+        return test
       end
     end
 
@@ -34,17 +18,19 @@ module Puppet::Parser::Functions
     # args[1] Window Type - per_day or window(default)
     # args[2] Hash, window_wday
     # args[3] Hash, window_time
+    # args[4] String, Point-in-time to test (optional)
 
     # Validate Arguments are all present
-    if args.length != 4
-      raise Puppet::ParseError, "Invalid argument count, got #{args.length} expected 4"
-    end
+    raise Puppet::ParseError, "Invalid argument count, got #{args.length} expected 4 or 5" unless (4..5).cover?(args.length)
 
     # Validate Args are correct type
     raise Puppet::ParseError, "TimeZone must be a string!"    unless args[0].is_a? String
     raise Puppet::ParseError, "Window type must be a string!" unless args[1].is_a? String
     raise Puppet::ParseError, "Window_wday must be a hash!"   unless args[2].is_a? Hash
     raise Puppet::ParseError, "Window_time must be a hash!"   unless args[3].is_a? Hash
+    if( args.length == 5)
+      raise Puppet::ParseError, "Point-in-time must be an array!" unless args[4].is_a? Array
+    end
 
     # Set Timezone for other timestamp
     timezone = args[0]
@@ -117,14 +103,28 @@ module Puppet::Parser::Functions
     start_time = args[3]['start'].split(':').map(&:to_i)
     end_time   = args[3]['end'].split(':').map(&:to_i)
     window_time = {'start' => start_time, 'end' => end_time }
+    window_time_str = {'start' => sprintf('%02d:%02d', start_time[0], start_time[1]),
+      'end' => sprintf('%02d:%02d',end_time[0],end_time[1])}
 
     # Get Time (this will use localtime)
-    t = Time.now.getlocal(timezone)
-
-
-    if window_wday_int['end'] == 0 and window_wday_int['start'] != 0
-      valid_days = (window_wday_int['start']..window_wday_int['start']+(6-window_wday_int['start'])).to_a.push(0).uniq
+    if args.length != 5
+      t = Time.now.getlocal(timezone)
     else
+      raise Puppet::ParseError, "Invalid key for time expected 5 values and received #{args[4].length}" unless args[4].length == 5
+      begin
+        t = Time.new( *args[4], 0, timezone)
+      rescue Exception
+        # Catch exception and rebrand as parse error
+        raise Puppet::ParseError, "Could not convert time array into valid Time.new object, received #{args[4].to_a}"
+      end
+    end
+
+    # Build array of valid_days
+    if window_wday_int['start'] > window_wday_int['end']
+      # EOW-Wrap 4,1 = 4,5,6,0,1
+      valid_days = (window_wday_int['start']..6).to_a + (0..window_wday_int['end']).to_a.uniq
+    else
+      # Within-EOW 1,4 = 1,2,3,4
       valid_days = (window_wday_int['start']..window_wday_int['end']).to_a.uniq
     end
 
@@ -132,38 +132,38 @@ module Puppet::Parser::Functions
     if valid_days.include?(t.wday)
 
       # IF this is the first day of the window
-      # And the window is multiple days
-      # And the window is continuous (not per_day)
-      # adjust the end time to be 23:59 (ie the last possible minute of the day)
-      if t.wday == window_wday_int['start'] and valid_days.length > 1 and window_type != 'per_day'
-        window_time['end'] = ['23','59']
-        # IF we are within <start time> and 23:59 return true
+      if t.wday == window_wday_int['start'] and valid_days.length > 1
+        # If window type or per_day with midnight wrap
+        if window_type == 'window' or (window_type == 'per_day' and window_time_str['start'] > window_time_str['end'])
+          # IF we are within <start time> and 23:59 return true
+          window_time['end'] = [23,59]
+        end
+        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+
+      # If this is the last day of the window
+      elsif t.wday == window_wday_int['end'] and valid_days.length > 1
+
+        # If window type or per_day with midnight wrap
+        if window_type == 'window' or (window_type == 'per_day' and window_time_str['start'] > window_time_str['end'])
+          #If we are within 00:00 and end
+          window_time['start'] = [0, 0]
+        end
+        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+
+      # If 1 day window type or per_day wo/ midnight wrap
+      elsif (valid_days.length == 1 and window_type == 'window') or window_type == 'per_day'
         change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
 
 
-      # IF this is the last day of the window, adjust to compare from 00:00 start time (ie first minute possible)
-      # And the window is multiple days
-      # And the window is continuous (not per_day)
-      elsif t.wday == window_wday_int['end'] and valid_days.length > 1 and window_type != 'per_day'
-        window_time['start'] = ['00','00']
-        # IF we are within 00:00 and <end time> return true
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
-
-      # If you've set window as your window type check and BUT thier is only 1 valid days
-      elsif valid_days.length == 1 and window_type != 'per_day'
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
-
-      # If you've set per_day as your window type check if we are within the correct time
+      # midweek per_day
       elsif window_type == 'per_day'
         change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
 
+      # Fall through matches window type and between window start/end
       else
-        # If you've accepted the default window_type this is a continuous change window
-        # Based on the above logic, this isn't the first day of the window, its not the last, but its within the valid_days
-        # for your window.  Meaning, we don't care about time.  Its in your window.  Example: Start is Mon, End is Wed,
-        # today is Tuesday.
         true.to_s
       end
+
     # Your not within the valid_days
     else
       false.to_s
