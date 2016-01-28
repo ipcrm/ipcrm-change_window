@@ -68,7 +68,7 @@ if $val == 'false' {
 You can also use hiera to enable more complex windows:
 
 hiera:
-```
+```yaml
 tz_dev: "-05:00"
 window_type_dev: per_day
 window_wday_dev:
@@ -121,8 +121,8 @@ change_windows = [
   [$tz, $window2_type, $window2_wday, $window2_time],
 ]
 
-if merge_change_windows($change_windows) == 'true' {
-  notify { "Puppet noop enabled in site.pp for env ${e}! Not within change window!": }
+if merge_change_windows($change_windows) == 'false' {
+  notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
 ```
@@ -138,13 +138,13 @@ change_window_set::my_change_window:
       end:   'Monday'
     - start: '22:00'
       end:   '02:00'
-    - # Wednesday @ 10 PM until Thursday @ 2 AM
-      - '-05:00'
-      - 'window'
-      - start: 'Wednesday'
-        end:   'Thursday'
-      - start: '22:00'
-        end:   '02:00'
+  - # Wednesday @ 10 PM until Thursday @ 2 AM
+    - '-05:00'
+    - 'window'
+    - start: 'Wednesday'
+      end:   'Thursday'
+    - start: '22:00'
+      end:   '02:00'
 ```
 
 site.pp:
