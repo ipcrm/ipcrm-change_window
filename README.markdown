@@ -16,24 +16,26 @@ Why?
 
 The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use this function with any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
 
-This module is actually made up of just one function, change_window.  All the function does is consume you change window information (see [usage](#usage)) and return true or false(as a string).  This can be used to make decisions within your code.
+This module is actually made up of just two functions, change_window and merge_change_windows.  The change_window function consumes your change window information (see [usage](#change_window)) and will return true or false (as a string).  The merge_change_windows function consumes an array of windows and tries each one.  If any one of the individual change_window returns 'true' then the merge_change_windows returns 'true'.  This allows construction of a complex change window with differing hours on differing days. Either function may be used within a module to make your decisions.
 
-*IMPORTANT* Remember that if your _within_ the change window the value returned is _true_, otherwise it returns _false_.
+*IMPORTANT:* Remember that if you are _within_ the change window then the value returned is a String containing _'true'_, otherwise it returns _'false'_.
 
-## Usage
-change_window( $tz, $window_wday, $window_time, $window_type, [$time])
+## change_window
+### Usage
+change_window( $tz, $window_type, $window_wday, $window_time, [$time])
 
 Where:
+
 `$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
-
-`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
-
-`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00).
 
 `$window_type` accepts to values: per_day or window.  
 * `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true. For wrapped hours you receive start to midnight on the first day and midnight to end on the last day.
 * `window` tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
 *  `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
+
+`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
+
+`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00). For per_day windows that wrap the midnight hour, the first day will apply the start-to-midnight and the last day will apply the midnight-to-end of the window.
 
 ```puppet
 $tz = "-05:00"
@@ -66,7 +68,7 @@ if $val == 'false' {
 You can also use hiera to enable more complex windows:
 
 hiera:
-```
+```yaml
 tz_dev: "-05:00"
 window_type_dev: per_day
 window_wday_dev:
@@ -88,6 +90,70 @@ $val = change_window(
          )
 if $val == 'false' {
   notify { "Puppet noop enabled in site.pp for env ${e}! Not within change window!": }
+  noop()
+}
+```
+
+## merge_change_windows
+### Usage
+merge_change_windows( $list_of_windows )
+
+Where:
+
+$list_of_windows is an Array made up of Arrays containing change_window parameters.
+
+#### Manifest Example
+```puppet
+$tz = "-05:00"
+
+# Friday @ 10 PM until Monday @ 2 AM
+$window1_type = 'window'
+$window1_wday = { start => 'Friday', end => 'Monday' }
+$window1_time = { start => '22:00',  end => '02:00' }
+
+# Wednesday @ 10 PM until Thursday @ 2 AM
+$window2_type = 'window'
+$window2_wday = { start => 'Wednesday', end => 'Thursday' }
+$window2_time = { start => '22:00',     end => '02:00' }
+
+change_windows = [
+  [$tz, $window1_type, $window1_wday, $window1_time],
+  [$tz, $window2_type, $window2_wday, $window2_time],
+]
+
+if merge_change_windows($change_windows) == 'false' {
+  notify { "Puppet noop enabled in site.pp! Not within change window!": }
+  noop()
+}
+```
+
+#### Hiera Example
+hiera:
+```yaml
+change_window_set::my_change_window:
+  - # Friday @ 10 PM until Monday @ 2 AM
+    - '-05:00'
+    - 'window'
+    - start: 'Friday'
+      end:   'Monday'
+    - start: '22:00'
+      end:   '02:00'
+  - # Wednesday @ 10 PM until Thursday @ 2 AM
+    - '-05:00'
+    - 'window'
+    - start: 'Wednesday'
+      end:   'Thursday'
+    - start: '22:00'
+      end:   '02:00'
+```
+
+site.pp:
+```puppet
+$change_window_set = 'my_change_window'
+$change_windows    = hiera("change_window_set::${my_change_window}")
+
+if merge_change_windows($change_windows) == 'false' {
+  notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
 ```
