@@ -14,8 +14,9 @@ describe 'test_apply', :type => :class do
         :is_pe                  => false,
       }
     end
-    it { should contain_class("test_notify") }
-    it { should contain_notify("test_notify").without_noop}
-    it { should contain_notify("notify_false_change_window").with_noop(true)}
+    it { should contain_class("test_notify_simple") }
+    it { should contain_class("test_notify_parameter") }
+    it { should contain_notify("test_notify_parameter").with_noop(true)}
+    it { should contain_notify("test_notify_simple").without_noop}
   end
 end

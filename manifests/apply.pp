@@ -7,8 +7,8 @@
 #
 #   $class_list[] may take one of two forms, a string with a class name to
 #    include or a hash suitable for create_resources().
-#       simple: profile::myprofile
-#       complex: {'profile::myprofile' => {'title' => {parm1 => 'xxx', parm2 => 'yyy'}}}
+#       simple : simple_class
+#       complex: {'parameter_class' => {parm1 => 'xxx', parm2 => 'yyy'}}
 ##
 define change_window::apply(
   $change_window_set,
@@ -25,11 +25,11 @@ define change_window::apply(
 
   # Set noop() when not "whithin" the change_window
   if merge_change_windows($change_windows) == 'false' {
-    debug("not in change_window")
+    debug('not in change_window')
     notify{ "#{${title}} not in change_windows #{${change_window_set}}, setting noop() mode.": }
     noop()
   } else {
-    debug("in change_window")
+    debug('in change_window')
     notify{ "#{${title}} in change_windows #{${change_window_set}}": }
   }
 
@@ -38,9 +38,8 @@ define change_window::apply(
   $class_list.each |$class_entry| {
     # complex class utilizing a hash structure
     if is_hash($class_entry) {
-      $class_entry.each |$class_type, $class_definition| {
-        create_resources($class_type, $class_definition)
-      }
+      create_resources('class', $class_entry)
+
     # Simple named class
     } else {
       include $class_entry
