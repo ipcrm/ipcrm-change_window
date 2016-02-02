@@ -1,0 +1,7 @@
+fixtures:
+  repositories:
+    stdlib: "https://github.com/puppetlabs/puppetlabs-stdlib.git"
+    noop: "https://github.com/trlinkin/trlinkin-noop.git"
+  symlinks:
+    change_window: "#{source_dir}"
+

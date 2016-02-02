@@ -7,19 +7,48 @@
 
 ## Overview
 
-Provides change_window function that allows you to check current time against change windows you've defined.  
+Provides change_window functionality that allows you to check current time against change windows and a defined type that applies noop() to classes when not within the change window.
 
 
 ## Module Description
 
 Why?
 
-The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use this function with any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
+The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use the function withs any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
 
-This module is actually made up of just two functions, change_window and merge_change_windows.  The change_window function consumes your change window information (see [usage](#change_window)) and will return true or false (as a string).  The merge_change_windows function consumes an array of windows and tries each one.  If any one of the individual change_window returns 'true' then the merge_change_windows returns 'true'.  This allows construction of a complex change window with differing hours on differing days. Either function may be used within a module to make your decisions.
+The module is made up of two functions and a defined class.  The functions, [change_window](#change_window)() and [merge_change_windows](#merge_change_windows)(), allow the comparison of a change window schedule against the current time to determine if the run is within the change window ('true'), or outside the change window ('false').  The change_window function checks against a single window definition, while the merge_change_window function will check a list windows and return 'true' if any one of them is true.
 
-*IMPORTANT:* Remember that if you are _within_ the change window then the value returned is a String containing _'true'_, otherwise it returns _'false'_.
+The defined type [change_window::apply](#change_windowapply) will accept a hiera key and a list of classes.  The hiera key is used to lookup a list of change windows to check.  The class list is then included into the catalog with the noop() mode set appropriately.  This function is intended for use during role definition and allows change window control over some or all of the profiles within the role.  Keeping the role definition tidy and allowing some classes to function without change control.  A handy feature when you have changes that you wish applied all the time.
 
+*IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a String containing _'true'_, otherwise it returns _'false'_.
+
+# Defined types
+## change_window::apply
+### Usage
+```puppet
+change_window::apply { 'my_controlled_changes':
+  change_window_set => 'weekly_window',
+  class_list        => [ 'profile::ntp', 'profile::resolver' ],
+}
+
+where:
+  change_window_set = hiera key to lookup change window definition
+  class_list        = an array of classes to include
+```
+The change window definition follows the hiera example under merge_change_windows.  The class_list will accept either simple class names to include or a hash describing the class/resource along with its parameters.
+
+example class_list: with simple and parameterized classes
+```
+$class_list = [
+  'profile::parameter_class' => {
+    parm1 => 'value1',
+    parm2 => 'value2',
+  },
+  'profile::simple_class',
+]
+```
+
+# Functions
 ## change_window
 ### Usage
 change_window( $tz, $window_type, $window_wday, $window_time, [$time])
