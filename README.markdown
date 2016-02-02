@@ -20,7 +20,32 @@ This module is actually made up of just two functions, change_window and merge_c
 
 *IMPORTANT:* Remember that if you are _within_ the change window then the value returned is a String containing _'true'_, otherwise it returns _'false'_.
 
-## change_window
+## Define: change_window::apply
+### Usage
+```puppet
+change_window::apply { 'my_controlled_changes':
+  change_window_set => 'weekly_window',
+  class_list        => [ 'profile::ntp', 'profile::resolver' ],
+}
+
+where:
+  change_window_set = hiera key to lookup change window definition
+  class_list        = an array of classes to include
+```
+The change window definition follows the hiera example under merge_change_windows.  The class_list will accept either simple class names to include or a hash describing the class/resource along with its parameters.
+
+example class_list: with simple and complex classes
+```
+$class_list = [
+  'profile::parameter_class' => {
+    parm1 => 'value1',
+    parm2 => 'value2',
+  },
+  'profile::simple_class',
+]
+```
+
+## Function: change_window()
 ### Usage
 change_window( $tz, $window_type, $window_wday, $window_time, [$time])
 
@@ -94,7 +119,7 @@ if $val == 'false' {
 }
 ```
 
-## merge_change_windows
+## Function: merge_change_windows()
 ### Usage
 merge_change_windows( $list_of_windows )
 

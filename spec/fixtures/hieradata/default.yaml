@@ -15,4 +15,3 @@ false_change_window:
       end:   'Sunday'
     - start: '23:59'
       end:   '23:59'
-data: foo
