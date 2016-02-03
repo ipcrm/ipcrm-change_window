@@ -10,7 +10,7 @@ RSpec.configure do |c|
   c.module_path  = File.expand_path(File.join(__FILE__, '../fixtures/modules'))
   c.manifest_dir = File.expand_path(File.join(__FILE__, '../fixtures/manifests'))
   c.hiera_config = File.expand_path(File.join(__FILE__, '../fixtures/hiera.yaml'))
-  c.before(:each) do
+  c.before(:all) do
     if ENV['DEBUG']
       Puppet::Util::Log.level = :debug
       Puppet::Util::Log.newdestination(:console)
