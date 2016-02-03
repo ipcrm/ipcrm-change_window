@@ -138,7 +138,7 @@ module Puppet::Parser::Functions
           # IF we are within <start time> and 23:59 return true
           window_time['end'] = [23,59]
         end
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+        return change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
       # If this is the last day of the window
       elsif t.wday == window_wday_int['end'] and valid_days.length > 1
@@ -148,25 +148,25 @@ module Puppet::Parser::Functions
           #If we are within 00:00 and end
           window_time['start'] = [0, 0]
         end
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+        return change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
       # If 1 day window type or per_day wo/ midnight wrap
       elsif (valid_days.length == 1 and window_type == 'window') or window_type == 'per_day'
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+        return change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
 
       # midweek per_day
       elsif window_type == 'per_day'
-        change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true.to_s : false.to_s
+        return change_window_time_is_within(window_time['start'],window_time['end'],[t.hour,t.min]) == true ? true : false
 
       # Fall through matches window type and between window start/end
       else
-        true.to_s
+        return true
       end
 
     # Your not within the valid_days
     else
-      false.to_s
+      return false
     end
   end
 end

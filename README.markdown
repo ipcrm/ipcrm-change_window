@@ -20,7 +20,7 @@ The module is made up of two functions and a defined class.  The functions, [cha
 
 The defined type [change_window::apply](#change_windowapply) will accept an array of change windows and a list of classes.  The class list is then included into the catalog with the noop() mode set appropriately.  This define is intended for use during role definition and allows change window control over some or all of the profiles within the role.  Keeping the role definition tidy and allowing some classes to function without change control.  A handy feature when you have changes that you wish applied all the time.
 
-*IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a String containing _'true'_, otherwise it returns _'false'_.
+*IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a Boolean containing _true_, otherwise it returns _false_.
 
 # Defined types
 ## change_window::apply
@@ -74,9 +74,8 @@ $tz = "-05:00"
 $window_wday  = { start => 'Friday', end => 'Saturday' }
 $window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'window'
-$val = change_window($tz, $window_type, $window_wday, $window_time)
 
-if $val == 'false' {
+if !change_window($tz, $window_type, $window_wday, $window_time){
     notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
@@ -89,9 +88,8 @@ $tz = "-05:00"
 $window_wday  = { start => 'Friday', end => 'Sunday' }
 $window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'per_day'
-$val = change_window($tz, $window_type, $window_wday, $window_time)
 
-if $val == 'false' {
+if !change_window($tz, $window_type, $window_wday, $window_time){
     notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
@@ -120,7 +118,7 @@ $val = change_window(
          hiera("window_wday_${e}"),
          hiera("window_time_${e}")
          )
-if $val == 'false' {
+if !$val {
   notify { "Puppet noop enabled in site.pp for env ${e}! Not within change window!": }
   noop()
 }
@@ -153,7 +151,7 @@ change_windows = [
   [$tz, $window2_type, $window2_wday, $window2_time],
 ]
 
-if merge_change_windows($change_windows) == 'false' {
+if !merge_change_windows($change_windows){
   notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
@@ -184,7 +182,7 @@ site.pp:
 $change_window_set = 'my_change_window'
 $change_windows    = hiera("change_window_set::${my_change_window}")
 
-if merge_change_windows($change_windows) == 'false' {
+if !merge_change_windows($change_windows){
   notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
