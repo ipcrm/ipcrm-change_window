@@ -20,7 +20,7 @@ The module is made up of two functions and a defined class.  The functions, [cha
 
 The defined type [change_window::apply](#change_windowapply) will accept an array of change windows and a list of classes.  The class list is then included into the catalog with the noop() mode set appropriately.  This define is intended for use during role definition and allows change window control over some or all of the profiles within the role.  Keeping the role definition tidy and allowing some classes to function without change control.  A handy feature when you have changes that you wish applied all the time.
 
-*IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a String containing _'true'_, otherwise it returns _'false'_.
+*IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a Boolean containing _true_, otherwise it returns _false_.
 
 # Defined types
 ## change_window::apply

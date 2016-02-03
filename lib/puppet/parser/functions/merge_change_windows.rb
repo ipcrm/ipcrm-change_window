@@ -15,7 +15,7 @@ module Puppet::Parser::Functions
     args[0].each { |cw|
       raise Puppet::ParseError, "Expect an Array for change_window entry, received #{cw.class}" unless cw.is_a? Array
       begin
-        if function_change_window( cw ) == 'true'
+        if function_change_window( cw ) == true
           in_cw = true
         end
       rescue Exception => e
@@ -23,6 +23,6 @@ module Puppet::Parser::Functions
         raise Puppet::ParseError, "change_window threw #{e.message}"
       end
     }
-    return in_cw.to_s
+    return in_cw
   end
 end

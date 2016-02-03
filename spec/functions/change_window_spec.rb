@@ -43,41 +43,41 @@ describe 'change_window' do
   it { is_expected.to run.with_params(tz,'window', pass_all_days,fail_key_time).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', pass_all_days,fail_time_format).and_raise_error(Puppet::ParseError) }
   it { is_expected.to run.with_params(tz,'window', fail_string_days,pass_all_times).and_raise_error(Puppet::ParseError) }
-  it { is_expected.to run.with_params(tz,'window', pass_string_days,pass_all_times, time).and_return("true") }
+  it { is_expected.to run.with_params(tz,'window', pass_string_days,pass_all_times, time).and_return(true) }
   # Test day-of-week (window)
-  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', fail_wndw_day,  pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', fail_one_day,   pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', fail_one_day,   pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'window', pass_wrap_day,  pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', fail_wrap_day,  pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_all_times, time).and_return("true") }
+  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', fail_wndw_day,  pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', fail_one_day,   pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', fail_one_day,   pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'window', pass_wrap_day,  pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', fail_wrap_day,  pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_all_times, time).and_return(true) }
   # Test day-of-week (per_day)
-  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', fail_wndw_day,  pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', fail_one_day,   pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_start_day, pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_end_day,   pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', fail_one_day,   pass_all_times, time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_wrap_day,  pass_all_times, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', fail_wrap_day,  pass_all_times, time).and_return("false") }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', fail_wndw_day,  pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', fail_one_day,   pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_start_day, pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_end_day,   pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', fail_one_day,   pass_all_times, time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_wrap_day,  pass_all_times, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', fail_wrap_day,  pass_all_times, time).and_return(false) }
   # Test time-of-day (window)
-  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   pass_wndw_time,       time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   fail_wndw_time,       time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  pass_wndw_time,       time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  fail_wndw_time,       time).and_return("true") } # passes because mid-window
-  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_wrap_time_start, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_wrap_time_end,   time).and_return("true") }
+  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   pass_wndw_time,       time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', pass_one_day,   fail_wndw_time,       time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  pass_wndw_time,       time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', pass_wndw_day,  fail_wndw_time,       time).and_return(true) } # passes because mid-window
+  it { is_expected.to run.with_params(tz, 'window', pass_start_day, pass_wrap_time_start, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'window', pass_end_day,   pass_wrap_time_end,   time).and_return(true) }
   # Test time-of-day (per_day)
-  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   pass_wndw_time,       time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   fail_wndw_time,       time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  pass_wndw_time,       time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  fail_wndw_time,       time).and_return("false") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_start_day, pass_wrap_time_start, time).and_return("true") }
-  it { is_expected.to run.with_params(tz, 'per_day', pass_end_day,   pass_wrap_time_end,   time).and_return("true") }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   pass_wndw_time,       time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_one_day,   fail_wndw_time,       time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  pass_wndw_time,       time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_wndw_day,  fail_wndw_time,       time).and_return(false) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_start_day, pass_wrap_time_start, time).and_return(true) }
+  it { is_expected.to run.with_params(tz, 'per_day', pass_end_day,   pass_wrap_time_end,   time).and_return(true) }
 end
