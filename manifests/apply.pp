@@ -22,7 +22,7 @@ define change_window::apply(
   debug("change_window_set = ${change_window_set}")
 
   # Set noop() when not "whithin" the change_window
-  if merge_change_windows($change_window_set) == false {
+  if !merge_change_windows($change_window_set){
     debug('not in change_window')
     notify{ "#{${title}} not in change_windows #{${change_window_set}}, setting noop() mode.": }
     noop()

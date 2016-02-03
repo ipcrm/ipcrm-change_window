@@ -74,9 +74,8 @@ $tz = "-05:00"
 $window_wday  = { start => 'Friday', end => 'Saturday' }
 $window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'window'
-$val = change_window($tz, $window_type, $window_wday, $window_time)
 
-if $val == 'false' {
+if !change_window($tz, $window_type, $window_wday, $window_time){
     notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
@@ -89,9 +88,8 @@ $tz = "-05:00"
 $window_wday  = { start => 'Friday', end => 'Sunday' }
 $window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'per_day'
-$val = change_window($tz, $window_type, $window_wday, $window_time)
 
-if $val == 'false' {
+if !change_window($tz, $window_type, $window_wday, $window_time){
     notify { "Puppet noop enabled in site.pp! Not within change window!": }
     noop()
 }
@@ -120,7 +118,7 @@ $val = change_window(
          hiera("window_wday_${e}"),
          hiera("window_time_${e}")
          )
-if $val == 'false' {
+if !$val {
   notify { "Puppet noop enabled in site.pp for env ${e}! Not within change window!": }
   noop()
 }
@@ -153,7 +151,7 @@ change_windows = [
   [$tz, $window2_type, $window2_wday, $window2_time],
 ]
 
-if merge_change_windows($change_windows) == 'false' {
+if !merge_change_windows($change_windows){
   notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
@@ -184,7 +182,7 @@ site.pp:
 $change_window_set = 'my_change_window'
 $change_windows    = hiera("change_window_set::${my_change_window}")
 
-if merge_change_windows($change_windows) == 'false' {
+if !merge_change_windows($change_windows){
   notify { "Puppet noop enabled in site.pp! Not within change window!": }
   noop()
 }
