@@ -14,11 +14,11 @@ Provides change_window functionality that allows you to check current time again
 
 Why?
 
-The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use the function withs any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
+The original reason for this module was to use it in conjunction with the `trlinkin/noop` module.  However, you can actually use the functions with any resource that you need to be sensitive to change windows by simply wrapping that resource declaration with some conditional logic.
 
 The module is made up of two functions and a defined class.  The functions, [change_window](#change_window)() and [merge_change_windows](#merge_change_windows)(), allow the comparison of a change window schedule against the current time to determine if the run is within the change window ('true'), or outside the change window ('false').  The change_window function checks against a single window definition, while the merge_change_window function will check a list windows and return 'true' if any one of them is true.
 
-The defined type [change_window::apply](#change_windowapply) will accept a hiera key and a list of classes.  The hiera key is used to lookup a list of change windows to check.  The class list is then included into the catalog with the noop() mode set appropriately.  This function is intended for use during role definition and allows change window control over some or all of the profiles within the role.  Keeping the role definition tidy and allowing some classes to function without change control.  A handy feature when you have changes that you wish applied all the time.
+The defined type [change_window::apply](#change_windowapply) will accept an array of change windows and a list of classes.  The class list is then included into the catalog with the noop() mode set appropriately.  This define is intended for use during role definition and allows change window control over some or all of the profiles within the role.  Keeping the role definition tidy and allowing some classes to function without change control.  A handy feature when you have changes that you wish applied all the time.
 
 *IMPORTANT:* Remember that if you are _within_ the change window then the value returned by the functions is a String containing _'true'_, otherwise it returns _'false'_.
 
@@ -27,15 +27,18 @@ The defined type [change_window::apply](#change_windowapply) will accept a hiera
 ### Usage
 ```puppet
 change_window::apply { 'my_controlled_changes':
-  change_window_set => 'weekly_window',
+  change_window_set => hiera('weekly_window'),
   class_list        => [ 'profile::ntp', 'profile::resolver' ],
 }
-
-where:
-  change_window_set = hiera key to lookup change window definition
-  class_list        = an array of classes to include
 ```
-The change window definition follows the hiera example under merge_change_windows.  The class_list will accept either simple class names to include or a hash describing the class/resource along with its parameters.
+where:
+
+`change_window_set` = An array of arrays defining your change windows to check.  Most easily defined and retrieved via hiera (but does not have to be, see [merge_change_windows](#merge_change_windows) for details)
+
+`class_list`        = an array of classes to include
+
+
+The class_list will accept either simple class names to include or a hash describing the class/resource along with its parameters.
 
 example class_list: with simple and parameterized classes
 ```

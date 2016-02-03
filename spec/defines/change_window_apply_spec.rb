@@ -19,7 +19,9 @@ describe 'change_window::apply', :type => :define do
   describe 'with_false_change_window' do
     let :params do
       default_params.merge({
-        :change_window_set => 'false_change_window'
+        :change_window_set => [
+          [ '-05:00', 'window', {'start' => 'Sunday', 'end' => 'Sunday'}, {'start' => '23:59', 'end' => '23:59' }],
+        ]
       })
     end
     it { is_expected.to contain_notify('test_notify_simple').with_noop(true) }
@@ -32,7 +34,10 @@ describe 'change_window::apply', :type => :define do
   describe 'with_true_change_window' do
     let :params do
       default_params.merge({
-        :change_window_set => 'true_change_window'
+        :change_window_set => [
+          [ '-05:00', 'window', {'start' => 'Tuesday', 'end' => 'Thursday'}, {'start' => '08:00', 'end' => '22:00' }],
+          [ '-05:00', 'window', {'start' => 'Wednesday', 'end' => 'Thursday'}, {'start' => '22:00', 'end' => '02:00' }],
+        ]
       })
     end
     it { is_expected.to contain_notify('test_notify_simple').without_noop }
@@ -43,7 +48,7 @@ describe 'change_window::apply', :type => :define do
   describe 'with_bad_change_window_set' do
     let :params do
       default_params.merge({
-        :change_window_set => 'bad_change_window_set'
+        :change_window_set => ""
       })
     end
     it { is_expected.not_to compile }
