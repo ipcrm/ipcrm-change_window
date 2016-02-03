@@ -192,4 +192,4 @@ if merge_change_windows($change_windows) == 'false' {
 
 ## Development
 
-Contributing via the normal means(fork/PR - add your tests!).  This code definitely could be improved.
+Contributing via the normal means(fork/PR - add your tests!).

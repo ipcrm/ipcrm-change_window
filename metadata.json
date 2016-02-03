@@ -1,6 +1,6 @@
 {
   "name": "ipcrm-change_window",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "ipcrm",
   "summary": "Provides change_window function that allows you to check current time against your defined change window(s)",
   "license": "Apache-2.0",
