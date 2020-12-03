@@ -13,7 +13,7 @@ require 'date'
 # @summary
 #   Creates complex change windows by merging a series of windows together
 #
-Puppet::Functions.create_function(:'change_window::merge_change_windows') do
+Puppet::Functions.create_function(:'merge_change_windows') do
   # @param args
   #   The original array of arguments. Port this to individually managed params
   #   to get the full benefit of the modern function API.

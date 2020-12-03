@@ -13,7 +13,7 @@ require 'date'
 # @summary
 #   Provides change_window function that allows you to check current time against change window
 #
-Puppet::Functions.create_function(:'change_window::change_window') do
+Puppet::Functions.create_function(:'change_window') do
   # @param args
   #   The original array of arguments. Port this to individually managed params
   #   to get the full benefit of the modern function API.
