@@ -39,7 +39,7 @@ Puppet::Functions.create_function(:'change_window::merge_change_windows') do
     args[0].each { |cw|
       raise Puppet::ParseError, "Expect an Array for change_window entry, received #{cw.class}" unless cw.is_a? Array
       begin
-        if function_change_window( cw ) == 'true'
+        if function_change_window_change_window( cw ) == 'true'
           in_cw = true
         end
       rescue Exception => e
