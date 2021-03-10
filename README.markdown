@@ -1,4 +1,4 @@
-#### Table of Contents
+##### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
@@ -54,20 +54,22 @@ $class_list = [
 # Functions
 ## change_window
 ### Usage
-change_window( $tz, $window_type, $window_wday, $window_time, [$time])
+change_window( $tz, $window_type, $window_wday, $window_time, [$window_week], [$window_month], [$time])
 
 Where:
 
-`$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
+- `$tz` is the timezone offset you want used when the current timestamp is generated.(this example is for EST)
 
-`$window_type` accepts to values: per_day or window.  
-* `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true. For wrapped hours you receive start to midnight on the first day and midnight to end on the last day.
-* `window` tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
-*  `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
+- `$window_type` accepts to values: per_day or window.
+  -  `per_day` tells change_window that the hours specified are valid on each day specified.  For example if you set days 0-3 and start 20:00, end 23:00 - then Sunday through Wednesday from 8PM to 11PM this function will return true. For wrapped hours you receive start to midnight on the first day and midnight to end on the last day.
+  -   `window` tells change_window to treat the days and times as a continuous change window spanning from start day/start time through end day/end time.
 
-`$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
+- `$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
 
-`$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00). For per_day windows that wrap the midnight hour, the first day will apply the start-to-midnight and the last day will apply the midnight-to-end of the window.
+- `$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00). For per_day windows that wrap the midnight hour, the first day will apply the start-to-midnight and the last day will apply the midnight-to-end of the window.
+- `$window_week` **OPTIONAL** array of weeks within a month to accept as within the change window. Values in the array must be of range 1-6. See 
+- `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
+
 
 ```puppet
 $tz = "-05:00"
@@ -189,6 +191,61 @@ if merge_change_windows($change_windows) == 'false' {
   noop()
 }
 ```
+
+### Week in Month Change Windows
+Using the `$window_week` parameter in `change_window` you can specify a sub-set of weeks within each month to be 
+accepted as valid change windows.
+
+This parameter is optional, if not used all weeks are included
+
+The parameter takes an Array of integers, between 1-6 as valid week definitions.
+
+#### Example
+
+Given the month is April 2021:
+![window week example](img/window_week.png?raw=true "Window week example - April 2021")
+
+Then:
+- Week 1 runs from first of the month to the first Sunday
+- Week 2 runs from the following Monday to the next Sunday
+- etc...
+- Last week of the month runs from final Monday to last day of the month
+
+### Month in Year Change Windows
+Using the `$window_month` parameter in `change_window` you can specify a sub-set of months within each year to be 
+accepted as valid change windows.
+
+This parameter is optional, if not used all months are included.
+
+The parameter takes an array of integers and/or string ranges of values.
+
+Months are represented by numerical values:
+
+| Month     | Value |
+| -----     | ----- |
+| January   | 1     |
+| February  | 2     |
+| March     | 3     |
+| April     | 4     |
+| May       | 5     |
+| June      | 6     |
+| July      | 7     |
+| August    | 8     |
+| September | 9     |
+| October   | 10    |
+| November  | 11    |
+| December  | 12    |
+
+For example:
+- Run only every other month: `[1,3,5,7,9,11]`
+- Run only between January and March (inclusive): `[1,2,3]` or `['1-3']`
+
+Individual values and ranges must only be between 1 and 12.
+
+## Acknowledgements
+
+- window_week functionality is provided through an extension which is a modified version of
+  [week-of-month](https://github.com/sachin87/week-of-month)
 
 ## Development
 

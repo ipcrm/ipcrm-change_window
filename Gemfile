@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 group :test do
-  gem "rake"
+  gem "rake", '< 11.0'
   gem "puppet", ENV['PUPPET_GEM_VERSION'] || '~> 4.3.1'
 #  gem "rspec", '< 3.2.0'
   gem "rspec"
@@ -33,3 +33,5 @@ group :system_tests do
   gem "beaker-rspec"
   gem "beaker-puppet_install_helper"
 end
+
+gem "coveralls"

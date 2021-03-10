@@ -1,6 +1,8 @@
 require 'spec_helper'
 require 'hiera'
 
+time  = [2016,1,6,6,15] # 2016-01-06 06:15 (Wed)
+
 describe 'change_window::apply', :type => :define do
   let :title do
     'test_change_window_apply'
@@ -20,7 +22,7 @@ describe 'change_window::apply', :type => :define do
     let :params do
       default_params.merge({
         :change_window_set => [
-          [ '-05:00', 'window', {'start' => 'Sunday', 'end' => 'Sunday'}, {'start' => '23:59', 'end' => '23:59' }],
+          [ '-05:00', 'window', {'start' => 'Sunday', 'end' => 'Sunday'}, {'start' => '23:59', 'end' => '23:59' }, [1,2,3,4,5], [1,2,3,4,5,6,7,8,9,10,12], time],
         ]
       })
     end
@@ -35,8 +37,8 @@ describe 'change_window::apply', :type => :define do
     let :params do
       default_params.merge({
         :change_window_set => [
-          [ '-05:00', 'window', {'start' => 'Tuesday', 'end' => 'Thursday'}, {'start' => '08:00', 'end' => '22:00' }],
-          [ '-05:00', 'window', {'start' => 'Wednesday', 'end' => 'Thursday'}, {'start' => '22:00', 'end' => '02:00' }],
+          [ '-05:00', 'window', {'start' => 'Tuesday', 'end' => 'Thursday'}, {'start' => '08:00', 'end' => '22:00' }, [1,2,3,4,5], [1,2,3,4,5,6,7,8,9,10,12], time],
+          [ '-05:00', 'window', {'start' => 'Wednesday', 'end' => 'Thursday'}, {'start' => '22:00', 'end' => '02:00' }, [1,2,3,4,5], [1,2,3,4,5,6,7,8,9,10,12], time],
         ]
       })
     end
