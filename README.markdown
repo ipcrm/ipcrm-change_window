@@ -67,7 +67,8 @@ Where:
 - `$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
 
 - `$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00). For per_day windows that wrap the midnight hour, the first day will apply the start-to-midnight and the last day will apply the midnight-to-end of the window.
-- `$window_week` **OPTIONAL** array of weeks within a month to accept as within the change window. Values in the array must be of range 1-6. See 
+- `$window_week` **OPTIONAL** array of weeks within a month to accept as within the change window. Values in the array must be of range 1-6. See [Week in month](###Week-in Month-Change-Windows) for details.
+- `$window_month` **OPTIONAL** array of months within a year to accept as within the change window. Values in the array must be of range 1-12. See [Month in year](###Month-in-Year-Change-Windows) for details.
 - `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
 
 
@@ -92,6 +93,23 @@ $window_wday  = { start => 'Friday', end => 'Sunday' }
 $window_time = { start  => '20:00', end => '23:00' }
 $window_type = 'per_day'
 $val = change_window($tz, $window_type, $window_wday, $window_time)
+
+if $val == 'false' {
+    notify { "Puppet noop enabled in site.pp! Not within change window!": }
+    noop()
+}
+```
+
+Example of using week and month windows, run on first and second week of the month and only between January and March.
+
+```puppet
+$tz = "-05:00"
+$window_wday  = { start => 'Friday', end => 'Saturday' }
+$window_time = { start  => '20:00', end => '23:00' }
+$window_type = 'window'
+$window_week = [1,2]
+$window_month = [1,2,3]
+$val = change_window($tz, $window_type, $window_wday, $window_time, $window_week, $window_month)
 
 if $val == 'false' {
     notify { "Puppet noop enabled in site.pp! Not within change window!": }
@@ -192,7 +210,7 @@ if merge_change_windows($change_windows) == 'false' {
 }
 ```
 
-### Week in Month Change Windows
+###Week in Month Change Windows
 Using the `$window_week` parameter in `change_window` you can specify a sub-set of weeks within each month to be 
 accepted as valid change windows.
 
@@ -211,7 +229,7 @@ Then:
 - etc...
 - Last week of the month runs from final Monday to last day of the month
 
-### Month in Year Change Windows
+###Month in Year Change Windows
 Using the `$window_month` parameter in `change_window` you can specify a sub-set of months within each year to be 
 accepted as valid change windows.
 
