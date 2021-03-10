@@ -67,7 +67,7 @@ Where:
 - `$window_wday` is a hash where start is the first weekday in your window and end is the last weekday - expressed as weekday names or 0-6.  You can specify the same day if you like and you may wrap the weekend (i.e friday .. monday).
 
 - `$window_time` is a hash where the start key is a timestamp (HH:MM), and end sets the end hour and minute. You may wrap the midnight hour (i.e. 22:00 .. 02:00). For per_day windows that wrap the midnight hour, the first day will apply the start-to-midnight and the last day will apply the midnight-to-end of the window.
-- `$window_week` **OPTIONAL** array of weeks within a month to accept as within the change window. Values in the array must be of range 1-6. See [Week in month](#week-in month-change-windows) for details.
+- `$window_week` **OPTIONAL** array of weeks within a month to accept as within the change window. Values in the array must be of range 1-6. See [Week in month](#week-in-month-change-windows) for details.
 - `$window_month` **OPTIONAL** array of months within a year to accept as within the change window. Values in the array must be of range 1-12. See [Month in year](#month-in-year-change-windows) for details.
 - `$time` is an optional parameter that lets you specify the time to test as an array.  This array is passed to the Time.new() object to set the time under test.  This array should take the form of [ YYYY, MM, DD, HH, MM] and will apply the timezone specified.
 
