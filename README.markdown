@@ -1,4 +1,4 @@
-##### Table of Contents
+#### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description](#module-description)
@@ -168,7 +168,7 @@ $window2_type = 'window'
 $window2_wday = { start => 'Wednesday', end => 'Thursday' }
 $window2_time = { start => '22:00',     end => '02:00' }
 
-change_windows = [
+$change_windows = [
   [$tz, $window1_type, $window1_wday, $window1_time],
   [$tz, $window2_type, $window2_wday, $window2_time],
 ]
