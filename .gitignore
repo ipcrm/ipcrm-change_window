@@ -1,8 +1,6 @@
 .*.sw?
 /pkg
 /spec/fixtures
-/spec/fixtures/modules/noop
-/spec/fixtures/modules/stdlib
 /.rspec_system
 /.vagrant
 /.bundle
