@@ -4,8 +4,8 @@ include ::change_window::apply
 class test_apply {
   change_window::apply { 'my_test_set':
     change_window_set => [
-          [ '-05:00', 'window', {'start' => 'Friday', 'end' => 'Monday'}, {'start' => '22:00', 'end' => '02:00' }],
-          [ '-05:00', 'window', {'start' => 'Wednesday', 'end' => 'Thursday'}, {'start' => '22:00', 'end' => '02:00' }],
+          [ '-05:00', 'window', {'start' => 'Friday', 'end' => 'Monday'}, {'start' => '22:00', 'end' => '02:00' }, [1,2,3,4,5], [1,2,3,4,5,6,7,8,9,10,12]],
+          [ '-05:00', 'window', {'start' => 'Wednesday', 'end' => 'Thursday'}, {'start' => '22:00', 'end' => '02:00' }, [1,2,3,4,5], [1,2,3,4,5,6,7,8,9,10,12]],
         ],
     class_list        => [{
       'test_notify_parameter' => {
