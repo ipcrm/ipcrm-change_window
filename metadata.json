@@ -1,39 +1,45 @@
 {
-  "name": "ipcrm-change_window",
+  "name": "puppetlabs-change_window",
   "version": "0.2.0",
-  "author": "ipcrm",
+  "author": "puppetlabs",
   "summary": "Provides change_window function that allows you to check current time against your defined change window(s)",
   "license": "Apache-2.0",
-  "source": "https://github.com/ipcrm/ipcrm-change_window",
-  "project_page": "https://github.com/ipcrm/ipcrm-change_window",
-  "issues_url": "https://github.com/ipcrm/ipcrm-change_window/issues",
+  "source": "https://github.com/puppetlabs/ipcrm-change_window",
+  "project_page": "https://github.com/puppetlabs/ipcrm-change_window",
+  "issues_url": "https://github.com/puppetlabs/ipcrm-change_window/issues",
   "dependencies": [
-    {"name":"puppetlabs/stdlib","version_requirement":">= 2.4.0 < 5.0.0"},
-    {"name":"trlinkin/noop", "version_requirement":">= 0.0.2"}
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 2.4.0 < 5.0.0"
+    },
+    {
+      "name": "trlinkin/noop",
+      "version_requirement": ">= 0.0.2"
+    }
   ],
-  "tags": ["utilities","change window","time"],
   "operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "5",
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "5",
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {
@@ -47,33 +53,34 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "6",
-        "7"
+        "8",
+        "9",
+        "10"
       ]
     },
     {
       "operatingsystem": "SLES",
       "operatingsystemrelease": [
-        "11 SP1"
+        "11",
+        "12",
+        "15"
       ]
     },
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "10.04",
-        "12.04",
-        "14.04"
+        "16.04",
+        "18.04",
+        "20.04"
       ]
     },
     {
       "operatingsystem": "Windows",
       "operatingsystemrelease": [
-        "Server 2008",
-        "Server 2008 R2",
         "Server 2012",
-        "Server 2012 R2",
-        "7",
-        "8"
+        "Server 2016",
+        "Server 2019",
+        "10"
       ]
     }
   ],
@@ -82,5 +89,13 @@
       "name": "puppet",
       "version_requirement": ">= 5.5.10 < 7.0.0"
     }
-  ]
+  ],
+  "tags": [
+    "utilities",
+    "change window",
+    "time"
+  ],
+  "pdk-version": "1.18.1",
+  "template-url": "pdk-default#1.18.1",
+  "template-ref": "tags/1.18.1-0-g3d2e75c"
 }
