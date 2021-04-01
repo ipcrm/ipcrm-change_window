@@ -22,7 +22,9 @@ It is **not** supported or maintained by puppet.
 
 ## Overview
 
-Provides change_window functionality that allows you to check current time against change windows and a defined type that applies noop() to classes when not within the change window.
+Allows puppet code to be applied during specified change window(s). 
+
+The change_window functionality allows you to check current time against change windows and a defined type that applies noop() to classes when not within the change window.
 
 
 ## Module Description
