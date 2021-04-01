@@ -10,7 +10,7 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 2.4.0 < 5.0.0"
+      "version_requirement": ">= 2.4.0 < 7.0.0"
     },
     {
       "name": "trlinkin/noop",
@@ -95,7 +95,7 @@
     "change window",
     "time"
   ],
-  "pdk-version": "1.18.1",
+  "pdk-version": "2.0.0",
   "template-url": "pdk-default#1.18.1",
   "template-ref": "tags/1.18.1-0-g3d2e75c"
 }

@@ -1,6 +1,6 @@
 # Changelog
 
-## Release 0.2
+## Release 0.2.0
 
 **Features**
 Added Change window week/month functionality - Steve Jeffries
