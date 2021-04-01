@@ -2,7 +2,7 @@
   "name": "puppetlabs-change_window",
   "version": "0.2.0",
   "author": "puppetlabs",
-  "summary": "Provides change_window function that allows you to check current time against your defined change window(s)",
+  "summary": "Allows puppet code to be applied during specified change window(s)",
   "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/change_window",
   "project_page": "https://github.com/puppetlabs/change_window",
