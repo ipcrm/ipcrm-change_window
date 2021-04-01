@@ -286,6 +286,6 @@ If anyone would like to contribute to the module, PR's are welcome.
 
 If you're experiencing any bugs you can raise an issue below however, given that this is a community module, it will only be resolved if someone submits a PR with a fix. Puppet accepts no responsibility for this module as described in [Background](#background).
 
-Repo:        https://github.com/puppetlabs/ipcrm-change_window
+Repo:        https://github.com/puppetlabs/change_window
 
-Issues link: https://github.com/puppetlabs/ipcrm-change_window/issues
+Issues link: https://github.com/puppetlabs/change_window/issues
