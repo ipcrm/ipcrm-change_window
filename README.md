@@ -1,13 +1,30 @@
+# change_window
+
 #### Table of Contents
 
-1. [Overview](#overview)
-2. [Module Description](#module-description)
+1. [Background](#background)
+2. [Overview](#overview)
+3. [Module Description](#module-description)
 4. [Usage](#usage)
-6. [Development - Guide for contributing to the module](#development)
+5. [Contributions - Guide for contributing to the module](#contributions)
+
+## Background
+
+This module is a fork of [ipcrm-change_window](https://forge.puppet.com/modules/ipcrm/change_window) which is no longer actively maintained. This fork has been moved under the puppetlabs namespace to allow for community contributions.
+
+It is **not** supported or maintained by puppet.
+
+**Original Author:**
+- Matt Cadorette
+
+**Week in Month feature:**
+- Steve Jefferies (WTW)
 
 ## Overview
 
-Provides change_window functionality that allows you to check current time against change windows and a defined type that applies noop() to classes when not within the change window.
+Allows puppet code to be applied during specified change window(s). 
+
+The change_window functionality allows you to check current time against change windows and a defined type that applies noop() to classes when not within the change window.
 
 
 ## Module Description
@@ -265,6 +282,12 @@ Individual values and ranges must only be between 1 and 12.
 - window_week functionality is provided through an extension which is a modified version of
   [week-of-month](https://github.com/sachin87/week-of-month)
 
-## Development
+# Contributions  
 
-Contributing via the normal means(fork/PR - add your tests!).
+If anyone would like to contribute to the module, PR's are welcome.
+
+If you're experiencing any bugs you can raise an issue below however, given that this is a community module, it will only be resolved if someone submits a PR with a fix. Puppet accepts no responsibility for this module as described in [Background](#background).
+
+Repo:        https://github.com/puppetlabs/change_window
+
+Issues link: https://github.com/puppetlabs/change_window/issues
